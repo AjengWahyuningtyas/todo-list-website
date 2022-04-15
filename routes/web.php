@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TodoListController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [TodoListController::class, 'index'])->name('index-home');
+Route::get('/tambah-task', [TodoListController::class, 'addTask'])->name('add-task');
+Route::post('/simpan-task', [TodoListController::class, 'saveTask'])->name('save-task');
+Route::post('/edit-task', [TodoListController::class, 'editTask'])->name('edit-task');
+Route::get('/hapus-task', [TodoListController::class, 'deleteTask'])->name('delete-task');
