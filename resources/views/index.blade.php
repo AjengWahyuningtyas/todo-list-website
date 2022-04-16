@@ -1,7 +1,6 @@
 @extends('head')
 
 @section('content')
-
 <div class="row d-flex justify-content-center container">
     <div class="col-md-8">
         <div class="card-hover-shadow-2x mb-3 card">
