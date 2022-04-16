@@ -2,21 +2,32 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
+use App\Models\TodoList;
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
 
 class TodoListController extends Controller
 {
     public function index(){
-        $todos = DB::table('todo_lists')->get();
-        return view('app', ['todo_lists' => $todos]);
+        $user_id = Auth::user()->id;
+        $todos = DB::table('todo_lists')->where('id_user', $user_id)->where('status', ['not yet', 'on progress'] )->get();
+        $completed = DB::table('todo_lists')->where('status', 'done')->get();
+        return view('app', ['todo_lists' => $todos, 'completed' => $completed]);
     }
 
-    // public function addTask(){
-    //     return view('index');
-    // }
+    public function doneTask($id){
+
+        TodoList::whereId($id)->update([
+            'status' => 'done',
+        ]);
+
+        // redirect
+        return redirect()->route('users.index-home')->with('status', 'Task Completed!');
+    }
 
     public function saveTask(Request $request){
+        $user_id = Auth::user()->id;
         
         // validate the form
         $request->validate([
@@ -24,11 +35,12 @@ class TodoListController extends Controller
         ]);
 
         // store the data
-        DB::table('todo_lists')->insert([
-            'name' => $request->name
+        DB::table('todo_lists')->where('id')->insert([
+            'name' => $request->name,
+            'id_user' => $user_id
         ]);
 
-        return redirect()->route('index-home')->with('status', 'Task added!');
+        return redirect()->route('users.index-home')->with('status', 'Task added!');
         // return redirect()->route('pegawai.krs-index')->with('success', 'KRS Telah Ditambahkan');
     }
     
@@ -44,7 +56,7 @@ class TodoListController extends Controller
         ]);
         
         // redirect
-        return redirect()->route('index-home')->with('status', 'Task updated!');
+        return redirect()->route('users.index-home')->with('status', 'Task updated!');
     }
 
     public function deleteTask($id){
@@ -52,7 +64,7 @@ class TodoListController extends Controller
         DB::table('todo_lists')->where('id', $id)->delete();
 
         // redirect
-        return redirect()->route('index-home')->with('status', 'Task removed!');
+        return redirect()->route('users.index-home')->with('status', 'Task removed!');
     }
 
     public function editTask(){
