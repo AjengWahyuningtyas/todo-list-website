@@ -15,7 +15,8 @@ use App\Http\Controllers\TodoListController;
 */
 
 Route::get('/', [TodoListController::class, 'index'])->name('index-home');
-Route::get('/tambah-task', [TodoListController::class, 'addTask'])->name('add-task');
+// Route::get('/tambah-task', [TodoListController::class, 'addTask'])->name('add-task');
 Route::post('/simpan-task', [TodoListController::class, 'saveTask'])->name('save-task');
-Route::post('/edit-task', [TodoListController::class, 'editTask'])->name('edit-task');
-Route::get('/hapus-task', [TodoListController::class, 'deleteTask'])->name('delete-task');
+Route::put('/{id}/update-task', [TodoListController::class, 'updateTask'])->name('update-task');
+Route::post('/{id}/edit-task', [TodoListController::class, 'editTask'])->name('edit-task');
+Route::post('/{id}/hapus-task', [TodoListController::class, 'deleteTask'])->name('delete-task');
